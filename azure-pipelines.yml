@@ -1,0 +1,43 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    sudo apt-get update
+    sudo apt-get install -y openjdk-11-jdk
+  displayName: 'Install Java 11'
+
+
+- script: |
+    sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo dpkg -i google-chrome-stable_current_amd64.deb
+    sudo apt-get -f install -y
+    wget -q https://chromedriver.storage.googleapis.com/$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip
+    unzip chromedriver_linux64.zip
+    sudo mv chromedriver /usr/local/bin/
+    sudo chmod +x /usr/local/bin/chromedriver
+  displayName: 'Install Google Chrome and ChromeDriver'
+- script: |
+    sudo apt update
+    sudo apt install -y maven
+   
+  displayName: 'Install Maven'
+
+- script: |
+    mvn -version
+  displayName: 'Verify Maven Installation'
+
+- script: |
+    sudo apt-get install -y xvfb
+    Xvfb :99 -screen 0 1920x1080x24 &
+    export DISPLAY=:99
+    mvn clean test -X
+  displayName: 'Run Maven tests'
+- script: |
+    cat target/surefire-reports/*.txt
+  displayName: 'Display Test Results'
+  condition: always()

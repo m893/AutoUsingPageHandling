@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Selenium Test Suite">
+    <test name="Image Display Test">
+        <classes>
+
+            <class name="PostsTests"></class>
+            <class name="NotificationsTests"></class>
+        </classes>
+    </test>
+</suite>
